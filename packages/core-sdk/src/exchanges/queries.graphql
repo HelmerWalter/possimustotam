@@ -1,0 +1,54 @@
+query getExchangeByIdQuery($exchangeId: ID!) {
+  exchange(id: $exchangeId) {
+    ...ExchangeFields
+  }
+}
+
+query getExchangesQuery(
+  $exchangesSkip: Int
+  $exchangesFirst: Int
+  $exchangesOrderBy: Exchange_orderBy
+  $exchangesOrderDirection: OrderDirection
+  $exchangesFilter: Exchange_filter
+) {
+  exchanges(
+    skip: $exchangesSkip
+    first: $exchangesFirst
+    orderBy: $exchangesOrderBy
+    orderDirection: $exchangesOrderDirection
+    where: $exchangesFilter
+  ) {
+    ...ExchangeFields
+  }
+}
+
+fragment ExchangeFields on Exchange {
+  ...BaseExchangeFields
+  offer {
+    ...BaseOfferFields
+  }
+}
+
+fragment BaseExchangeFields on Exchange {
+  id
+  disputed
+  state
+  committedDate
+  finalizedDate
+  validUntilDate
+  redeemedDate
+  revokedDate
+  cancelledDate
+  completedDate
+  disputedDate
+  expired
+  dispute {
+    ...BaseDisputeFields
+  }
+  buyer {
+    ...BaseBuyerFields
+  }
+  seller {
+    ...BaseSellerFields
+  }
+}

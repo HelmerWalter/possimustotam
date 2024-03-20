@@ -1,0 +1,422 @@
+query getSellerByIdQuery(
+  $sellerId: ID!
+  $fundsSkip: Int
+  $fundsFirst: Int
+  $fundsOrderBy: FundsEntity_orderBy
+  $fundsOrderDirection: OrderDirection
+  $fundsFilter: FundsEntity_filter
+  $offersSkip: Int
+  $offersFirst: Int
+  $offersOrderBy: Offer_orderBy
+  $offersOrderDirection: OrderDirection
+  $offersFilter: Offer_filter
+  $exchangesSkip: Int
+  $exchangesFirst: Int
+  $exchangesOrderBy: Exchange_orderBy
+  $exchangesOrderDirection: OrderDirection
+  $exchangesFilter: Exchange_filter
+  $logsSkip: Int
+  $logsFirst: Int
+  $logsOrderBy: EventLog_orderBy
+  $logsOrderDirection: OrderDirection
+  $logsFilter: EventLog_filter
+  $includeExchanges: Boolean = false
+  $includeOffers: Boolean = false
+  $includeFunds: Boolean = false
+  $includeLogs: Boolean = false
+) {
+  seller(id: $sellerId) {
+    ...SellerFields
+  }
+}
+
+query getSellersQuery(
+  $sellersSkip: Int
+  $sellersFirst: Int
+  $sellersOrderBy: Seller_orderBy
+  $sellersOrderDirection: OrderDirection
+  $sellersFilter: Seller_filter
+  $fundsSkip: Int
+  $fundsFirst: Int
+  $fundsOrderBy: FundsEntity_orderBy
+  $fundsOrderDirection: OrderDirection
+  $fundsFilter: FundsEntity_filter
+  $offersSkip: Int
+  $offersFirst: Int
+  $offersOrderBy: Offer_orderBy
+  $offersOrderDirection: OrderDirection
+  $offersFilter: Offer_filter
+  $exchangesSkip: Int
+  $exchangesFirst: Int
+  $exchangesOrderBy: Exchange_orderBy
+  $exchangesOrderDirection: OrderDirection
+  $exchangesFilter: Exchange_filter
+  $logsSkip: Int
+  $logsFirst: Int
+  $logsOrderBy: EventLog_orderBy
+  $logsOrderDirection: OrderDirection
+  $logsFilter: EventLog_filter
+  $includeExchanges: Boolean = false
+  $includeOffers: Boolean = false
+  $includeFunds: Boolean = false
+  $includeLogs: Boolean = false
+) {
+  sellers(
+    skip: $sellersSkip
+    first: $sellersFirst
+    orderBy: $sellersOrderBy
+    orderDirection: $sellersOrderDirection
+    where: $sellersFilter
+  ) {
+    ...SellerFields
+  }
+}
+
+query getBuyerByIdQuery(
+  $buyerId: ID!
+  $fundsSkip: Int
+  $fundsFirst: Int
+  $fundsOrderBy: FundsEntity_orderBy
+  $fundsOrderDirection: OrderDirection
+  $fundsFilter: FundsEntity_filter
+  $exchangesSkip: Int
+  $exchangesFirst: Int
+  $exchangesOrderBy: Exchange_orderBy
+  $exchangesOrderDirection: OrderDirection
+  $exchangesFilter: Exchange_filter
+  $logsSkip: Int
+  $logsFirst: Int
+  $logsOrderBy: EventLog_orderBy
+  $logsOrderDirection: OrderDirection
+  $logsFilter: EventLog_filter
+  $includeExchanges: Boolean = false
+  $includeFunds: Boolean = false
+  $includeLogs: Boolean = false
+) {
+  buyer(id: $buyerId) {
+    ...BuyerFields
+  }
+}
+
+query getBuyersQuery(
+  $buyersSkip: Int
+  $buyersFirst: Int
+  $buyersOrderBy: Buyer_orderBy
+  $buyersOrderDirection: OrderDirection
+  $buyersFilter: Buyer_filter
+  $fundsSkip: Int
+  $fundsFirst: Int
+  $fundsOrderBy: FundsEntity_orderBy
+  $fundsOrderDirection: OrderDirection
+  $fundsFilter: FundsEntity_filter
+  $offersSkip: Int
+  $offersFirst: Int
+  $offersOrderBy: Offer_orderBy
+  $offersOrderDirection: OrderDirection
+  $offersFilter: Offer_filter
+  $exchangesSkip: Int
+  $exchangesFirst: Int
+  $exchangesOrderBy: Exchange_orderBy
+  $exchangesOrderDirection: OrderDirection
+  $exchangesFilter: Exchange_filter
+  $logsSkip: Int
+  $logsFirst: Int
+  $logsOrderBy: EventLog_orderBy
+  $logsOrderDirection: OrderDirection
+  $logsFilter: EventLog_filter
+  $includeExchanges: Boolean = false
+  $includeOffers: Boolean = false
+  $includeFunds: Boolean = false
+  $includeLogs: Boolean = false
+) {
+  buyers(
+    skip: $buyersSkip
+    first: $buyersFirst
+    orderBy: $buyersOrderBy
+    orderDirection: $buyersOrderDirection
+    where: $buyersFilter
+  ) {
+    ...BuyerFields
+  }
+}
+
+query getDisputeResolverByIdQuery(
+  $disputeResolverId: ID!
+  $offersSkip: Int
+  $offersFirst: Int
+  $offersOrderBy: Offer_orderBy
+  $offersOrderDirection: OrderDirection
+  $offersFilter: Offer_filter
+  $logsSkip: Int
+  $logsFirst: Int
+  $logsOrderBy: EventLog_orderBy
+  $logsOrderDirection: OrderDirection
+  $logsFilter: EventLog_filter
+  $includeOffers: Boolean = false
+  $includeLogs: Boolean = false
+) {
+  disputeResolver(id: $disputeResolverId) {
+    ...DisputeResolverFields
+  }
+}
+
+query getDisputeResolversQuery(
+  $disputeResolversSkip: Int
+  $disputeResolversFirst: Int
+  $disputeResolversOrderBy: DisputeResolver_orderBy
+  $disputeResolversOrderDirection: OrderDirection
+  $disputeResolversFilter: DisputeResolver_filter
+  $offersSkip: Int
+  $offersFirst: Int
+  $offersOrderBy: Offer_orderBy
+  $offersOrderDirection: OrderDirection
+  $offersFilter: Offer_filter
+  $logsSkip: Int
+  $logsFirst: Int
+  $logsOrderBy: EventLog_orderBy
+  $logsOrderDirection: OrderDirection
+  $logsFilter: EventLog_filter
+  $includeOffers: Boolean = false
+  $includeLogs: Boolean = false
+) {
+  disputeResolvers(
+    skip: $disputeResolversSkip
+    first: $disputeResolversFirst
+    orderBy: $disputeResolversOrderBy
+    orderDirection: $disputeResolversOrderDirection
+    where: $disputeResolversFilter
+  ) {
+    ...DisputeResolverFields
+  }
+}
+
+fragment SellerFields on Seller {
+  ...BaseSellerFields
+  pendingSeller {
+    ...PendingSellerFields
+  }
+  funds(
+    skip: $fundsSkip
+    first: $fundsFirst
+    orderBy: $fundsOrderBy
+    orderDirection: $fundsOrderDirection
+    where: $fundsFilter
+  ) @include(if: $includeFunds) {
+    ...FundsEntityFields
+  }
+  offers(
+    skip: $offersSkip
+    first: $offersFirst
+    orderBy: $offersOrderBy
+    orderDirection: $offersOrderDirection
+    where: $offersFilter
+  ) @include(if: $includeOffers) {
+    ...BaseOfferFields
+  }
+  exchanges(
+    skip: $exchangesSkip
+    first: $exchangesFirst
+    orderBy: $exchangesOrderBy
+    orderDirection: $exchangesOrderDirection
+    where: $exchangesFilter
+  ) @include(if: $includeExchanges) {
+    ...BaseExchangeFields
+  }
+  logs(
+    skip: $logsSkip
+    first: $logsFirst
+    orderBy: $logsOrderBy
+    orderDirection: $logsOrderDirection
+    where: $logsFilter
+  ) @include(if: $includeLogs) {
+    ...BaseEventLogFields
+  }
+}
+
+fragment SellerMetadataMediaFields on SellerMetadataMedia {
+  id
+  url
+  tag
+  type
+  width
+  height
+}
+
+fragment SellerContactLinkFields on SellerContactLink {
+  id
+  url
+  tag
+}
+
+fragment SellerSocialLinkFields on SellerSocialLink {
+  id
+  url
+  tag
+}
+
+fragment SalesChannelFields on SalesChannel {
+  id
+  tag
+  name
+  settingsUri
+  settingsEditor
+  link
+  deployments {
+    id
+    product {
+      id
+      uuid
+      version
+    }
+    status
+    link
+    lastUpdated
+  }
+}
+
+fragment BaseSellerFields on Seller {
+  id
+  assistant
+  admin
+  clerk
+  treasury
+  authTokenId
+  authTokenType
+  voucherCloneAddress
+  active
+  contractURI
+  royaltyPercentage
+  metadataUri
+  metadata {
+    id
+    createdAt
+    name
+    description
+    legalTradingName
+    type
+    kind
+    website
+    images {
+      ...SellerMetadataMediaFields
+    }
+    contactLinks {
+      ...SellerContactLinkFields
+    }
+    contactPreference
+    socialLinks {
+      ...SellerSocialLinkFields
+    }
+    salesChannels {
+      ...SalesChannelFields
+    }
+  }
+}
+
+fragment PendingSellerFields on PendingSeller {
+  assistant
+  admin
+  clerk
+  authTokenId
+  authTokenType
+}
+
+fragment BuyerFields on Buyer {
+  ...BaseBuyerFields
+  funds(
+    skip: $fundsSkip
+    first: $fundsFirst
+    orderBy: $fundsOrderBy
+    orderDirection: $fundsOrderDirection
+    where: $fundsFilter
+  ) @include(if: $includeFunds) {
+    ...FundsEntityFields
+  }
+  exchanges(
+    skip: $exchangesSkip
+    first: $exchangesFirst
+    orderBy: $exchangesOrderBy
+    orderDirection: $exchangesOrderDirection
+    where: $exchangesFilter
+  ) @include(if: $includeExchanges) {
+    ...BaseExchangeFields
+  }
+  logs(
+    skip: $logsSkip
+    first: $logsFirst
+    orderBy: $logsOrderBy
+    orderDirection: $logsOrderDirection
+    where: $logsFilter
+  ) @include(if: $includeLogs) {
+    ...BaseEventLogFields
+  }
+}
+
+fragment BaseBuyerFields on Buyer {
+  id
+  wallet
+  active
+}
+
+fragment DisputeResolverFields on DisputeResolver {
+  ...BaseDisputeResolverFields
+  pendingDisputeResolver {
+    ...PendingDisputeResolverFields
+  }
+  offers(
+    skip: $offersSkip
+    first: $offersFirst
+    orderBy: $offersOrderBy
+    orderDirection: $offersOrderDirection
+    where: $offersFilter
+  ) @include(if: $includeOffers) {
+    ...BaseOfferFields
+  }
+  logs(
+    skip: $logsSkip
+    first: $logsFirst
+    orderBy: $logsOrderBy
+    orderDirection: $logsOrderDirection
+    where: $logsFilter
+  ) @include(if: $includeLogs) {
+    ...BaseEventLogFields
+  }
+}
+
+fragment BaseDisputeResolverFields on DisputeResolver {
+  id
+  escalationResponsePeriod
+  admin
+  clerk
+  treasury
+  assistant
+  metadataUri
+  active
+  sellerAllowList
+  fees {
+    ...BaseDisputeResolverFeeFields
+  }
+}
+
+fragment PendingDisputeResolverFields on PendingDisputeResolver {
+  assistant
+  admin
+  clerk
+}
+
+fragment BaseDisputeResolverFeeFields on DisputeResolverFee {
+  id
+  tokenAddress
+  tokenName
+  token {
+    ...BaseExchangeTokenFields
+  }
+  feeAmount
+}
+
+fragment BaseDisputeResolutionTermsEntityFields on DisputeResolutionTermsEntity {
+  id
+  disputeResolverId
+  escalationResponsePeriod
+  feeAmount
+  buyerEscalationDeposit
+}

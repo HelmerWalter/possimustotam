@@ -1,0 +1,762 @@
+enum MetadataType {
+  BASE
+  PRODUCT_V1
+}
+
+interface MetadataInterface {
+  """
+  Fields compliant to metadata standard
+  """
+  id: ID! # [OFFER_ID]-metadata
+  name: String!
+  description: String!
+  externalUrl: String! # Arbitrary URL which is linked to metadata
+  animationUrl: String # Arbitrary URL which is linked to metadata
+  animationMetadata: AnimationMetadata
+  licenseUrl: String! # Arbitrary URL which is linked to the rNFT license
+  condition: String
+  schemaUrl: String! # JSON schema URL
+  type: MetadataType!
+  image: String!
+  attributes: [MetadataAttribute!]
+  """
+  References to entities
+  """
+  offer: Offer!
+  seller: Seller!
+  exchangeToken: ExchangeToken!
+  """
+  Enriched fields from offer entity to allow nested query workaround
+  """
+  createdAt: BigInt!
+  voided: Boolean!
+  validFromDate: BigInt!
+  validUntilDate: BigInt!
+  quantityAvailable: BigInt!
+  numberOfCommits: BigInt!
+  numberOfRedemptions: BigInt!
+}
+
+type SellerContactLink @entity {
+  id: ID!
+  url: String!
+  tag: String!
+}
+
+type SellerSocialLink @entity {
+  id: ID!
+  url: String!
+  tag: String!
+}
+
+
+type SellerMetadataMedia @entity {
+  id: ID!
+  url: String!
+  tag: String
+  type: String!
+  width: Int
+  height: Int
+}
+
+enum SellerMetadataType {
+  SELLER
+}
+
+type SalesChannelDeployment @entity {
+  id: ID!
+  product: ProductV1Product
+  status: String
+  link: String
+  lastUpdated: String
+}
+
+type SalesChannel @entity {
+  id: ID!
+  tag: String!
+  name: String
+  settingsUri: String
+  settingsEditor: String
+  link: String
+  deployments: [SalesChannelDeployment!]
+}
+
+type SellerMetadata @entity {
+  id: ID!
+  type: SellerMetadataType!
+  createdAt: BigInt!
+  name: String
+  description: String
+  legalTradingName: String
+  kind: String!
+  website: String
+  images: [SellerMetadataMedia!]
+  contactLinks: [SellerContactLink!]
+  contactPreference: String!
+  socialLinks: [SellerSocialLink!]
+  salesChannels: [SalesChannel!]
+}
+
+type AnimationMetadata @entity {
+  id: ID!
+  height: Int
+  type: String
+  width: Int
+}
+
+type MetadataAttribute @entity {
+  id: ID!
+  traitType: String!
+  value: String!
+  displayType: String!
+}
+
+type BaseMetadataEntity implements MetadataInterface @entity {
+  """
+  Fields compliant to metadata standard
+  """
+  id: ID!
+  name: String!
+  description: String!
+  externalUrl: String! # Arbitrary URL which is linked to metadata
+  animationUrl: String # Arbitrary URL which is linked to metadata
+  animationMetadata: AnimationMetadata
+  licenseUrl: String! # Arbitrary URL which is linked to the rNFT license
+  condition: String
+  schemaUrl: String! # JSON schema URL
+  "MetadataType.BASE"
+  type: MetadataType!
+  image: String!
+  attributes: [MetadataAttribute!]
+  """
+  References to entities
+  """
+  offer: Offer!
+  seller: Seller!
+  exchangeToken: ExchangeToken!
+  """
+  Enriched fields from offer entity to allow nested query workaround
+  """
+  createdAt: BigInt!
+  voided: Boolean!
+  validFromDate: BigInt!
+  validUntilDate: BigInt!
+  quantityAvailable: BigInt!
+  numberOfCommits: BigInt!
+  numberOfRedemptions: BigInt!
+}
+
+type ProductV1MetadataEntity implements MetadataInterface @entity {
+  """
+  Fields compliant to metadata standard
+  """
+  id: ID!
+  name: String!
+  description: String!
+  externalUrl: String! # Arbitrary URL which is linked to metadata
+  animationUrl: String # Arbitrary URL which is linked to metadata
+  animationMetadata: AnimationMetadata
+  licenseUrl: String! # Arbitrary URL which is linked to the rNFT license
+  condition: String
+  schemaUrl: String! # JSON schema URL
+  "MetadataType.PRODUCT_V1"
+  type: MetadataType!
+  image: String!
+  attributes: [MetadataAttribute!]
+  """
+  References to entities
+  """
+  offer: Offer!
+  seller: Seller!
+  exchangeToken: ExchangeToken!
+  """
+  Enriched fields from offer entity to allow nested query workaround
+  """
+  createdAt: BigInt!
+  voided: Boolean!
+  validFromDate: BigInt!
+  validUntilDate: BigInt!
+  quantityAvailable: BigInt!
+  numberOfCommits: BigInt!
+  numberOfRedemptions: BigInt!
+  """
+  PRODUCT_V1 specific fields
+  """
+  uuid: String! # Offer unique ID
+  productUuid: String! # Product unique ID (unique for all variants of the same product)
+  productVersion: Int! # Product version
+  product: ProductV1Product!
+  variations: [ProductV1Variation!]
+  productV1Seller: ProductV1Seller!
+  shipping: ProductV1ShippingOption
+  exchangePolicy: ProductV1ExchangePolicy!
+  productOverrides: ProductV1ProductOverrides
+}
+
+type ProductV1Product @entity {
+  id: ID!
+  uuid: String!
+  version: Int!
+  title: String!
+  description: String!
+  """
+  Identification fields
+  """
+  identification_sKU: String
+  identification_productId: String
+  identification_productIdType: String
+  """
+  Product information fields
+  """
+  disputeResolverId: BigInt!
+  productionInformation_brandName: String!
+  brand: ProductV1Brand! # ref by productionInformation_brandName
+  productionInformation_manufacturer: String
+  productionInformation_manufacturerPartNumber: String
+  productionInformation_modelNumber: String
+  productionInformation_materials: [String!]
+  """
+  Details fields
+  """
+  details_category: String
+  category: ProductV1Category
+  details_subCategory: String
+  subCategory: ProductV1Category
+  details_subCategory2: String
+  subCategory2: ProductV1Category
+  details_offerCategory: String!
+  offerCategory: ProductV1OfferCategory!
+  details_tags: [String!]
+  tags: [ProductV1Tag!]
+  details_sections: [String!]
+  sections: [ProductV1Section!]
+  details_personalisation: [String!]
+  personalisation: [ProductV1Personalisation!]
+  """
+  Visuals
+  """
+  visuals_images: [ProductV1Media!]!
+  visuals_videos: [ProductV1Media!]
+  """
+  Packaging
+  """
+  packaging_packageQuantity: String
+  packaging_dimensions_length: String
+  packaging_dimensions_width: String
+  packaging_dimensions_height: String
+  packaging_dimensions_unit: String
+  packaging_weight_value: String
+  packaging_weight_unit: String
+  """
+  Seller
+  """
+  productV1Seller: ProductV1Seller
+  sellerId: BigInt!
+  salesChannels: [SalesChannel!]
+  """
+  PRODUCT_V1 specific fields
+  """
+  variants: [ProductV1Variant!]
+  notVoidedVariants: [ProductV1Variant!]
+  allVariantsVoided: Boolean
+  minValidFromDate: BigInt!
+  maxValidFromDate: BigInt!
+  minValidUntilDate: BigInt!
+  maxValidUntilDate: BigInt!
+}
+
+type ProductV1Brand @entity {
+  id: ID!
+  name: String!
+  products: [ProductV1Product!]! @derivedFrom(field: "brand")
+}
+
+type ProductV1Category @entity {
+  id: ID!
+  name: String!
+}
+
+type ProductV1Tag @entity {
+  id: ID!
+  name: String!
+}
+
+type ProductV1Section @entity {
+  id: ID!
+  name: String!
+}
+
+type ProductV1Media @entity {
+  id: ID!
+  url: String!
+  tag: String
+  type: ProductV1MediaType!
+  width: Int
+  height: Int
+}
+
+type ProductV1Personalisation @entity {
+  id: ID!
+  name: String!
+}
+
+type ProductV1Variation @entity {
+  id: ID!
+  type: String!
+  option: String!
+}
+
+type ProductV1Variant @entity {
+  id: ID!
+  variations: [ProductV1Variation!]
+  offer: Offer!
+}
+
+type ProductV1Seller @entity {
+  id: ID!
+  defaultVersion: Int!
+  name: String
+  description: String
+  externalUrl: String
+  tokenId: String
+  sellerId: String
+  images: [ProductV1Media!]
+  contactLinks: [ProductV1SellerContactLink!]
+  contactPreference: String
+  """
+  Refs
+  """
+  seller: Seller!
+}
+
+type ProductV1SellerContactLink @entity {
+  id: ID!
+  url: String!
+  tag: String!
+}
+
+type ProductV1ShippingOption @entity {
+  id: ID!
+  defaultVersion: Int
+  countryOfOrigin: String
+  supportedJurisdictions: [ProductV1ShippingJurisdiction!]
+  redemptionPoint: String
+  returnPeriodInDays: Int!
+}
+
+type ProductV1ShippingJurisdiction @entity {
+  id: ID!
+  label: String!
+  deliveryTime: String!
+}
+
+type ProductV1ExchangePolicy @entity {
+  id: ID!
+  uuid: String!
+  version: Int!
+  label: String
+  template: String!
+  sellerContactMethod: String!
+  disputeResolverContactMethod: String!
+}
+
+type ProductV1ProductOverrides @entity {
+  id: ID!
+  version: Int!
+  title: String!
+  description: String!
+  identification_sKU: String
+  identification_productId: String
+  identification_productIdType: String
+  productionInformation_brandName: String!
+  brand: ProductV1Brand!
+  productionInformation_manufacturer: String
+  productionInformation_manufacturerPartNumber: String
+  productionInformation_modelNumber: String
+  productionInformation_materials: [String!]
+  visuals_images: [ProductV1Media!]!
+  visuals_videos: [ProductV1Media!]
+  packaging_packageQuantity: String
+  packaging_dimensions_length: String
+  packaging_dimensions_width: String
+  packaging_dimensions_height: String
+  packaging_dimensions_unit: String
+  packaging_weight_value: String
+  packaging_weight_unit: String
+}
+
+enum ProductV1OfferCategory {
+  PHYSICAL
+  PHYGITAL
+  DIGITAL
+}
+
+enum ProductV1MediaType {
+  IMAGE
+  VIDEO
+}
+
+"""
+Offer
+"""
+type Offer @entity {
+  id: ID!
+  createdAt: BigInt!
+  price: BigInt!
+  sellerDeposit: BigInt!
+  protocolFee: BigInt!
+  agentFee: BigInt!
+  agentId: BigInt!
+  buyerCancelPenalty: BigInt!
+  quantityInitial: BigInt!
+  quantityAvailable: BigInt!
+
+  "Offer dates"
+  validFromDate: BigInt!
+  validUntilDate: BigInt!
+  voucherRedeemableFromDate: BigInt!
+  voucherRedeemableUntilDate: BigInt!
+
+  "Offer durations"
+  disputePeriodDuration: BigInt!
+  voucherValidDuration: BigInt!
+  resolutionPeriodDuration: BigInt!
+
+  metadataUri: String!
+  metadataHash: String!
+  voided: Boolean!
+  disputeResolverId: BigInt!
+  disputeResolver: DisputeResolver!
+  disputeResolutionTerms: DisputeResolutionTermsEntity!
+  sellerId: BigInt!
+  seller: Seller!
+  exchangeToken: ExchangeToken!
+  metadata: MetadataInterface
+  voidedAt: BigInt
+  exchanges: [Exchange!]! @derivedFrom(field: "offer")
+  condition: ConditionEntity
+
+  "Range"
+  range: RangeEntity
+
+  "Stats"
+  numberOfCommits: BigInt!
+  numberOfRedemptions: BigInt!
+}
+
+"""
+Exchange and Voucher
+"""
+enum ExchangeState {
+  COMMITTED
+  REVOKED
+  CANCELLED
+  REDEEMED
+  COMPLETED
+  DISPUTED
+}
+
+type Exchange @entity {
+  id: ID!
+  offer: Offer!
+  buyer: Buyer!
+  seller: Seller!
+  disputeResolver: DisputeResolver!
+  disputed: Boolean!
+  state: ExchangeState!
+  committedDate: BigInt!
+  finalizedDate: BigInt
+  validUntilDate: BigInt!
+  redeemedDate: BigInt
+  revokedDate: BigInt
+  completedDate: BigInt
+  cancelledDate: BigInt
+  disputedDate: BigInt
+  expired: Boolean!
+  dispute: Dispute
+}
+
+"""
+Accounts
+"""
+interface Account {
+  id: ID!
+  funds: [FundsEntity!]! @derivedFrom(field: "account")
+  logs: [EventLog!]! @derivedFrom(field: "account")
+}
+
+type PendingSeller @entity {
+  id: ID!
+  assistant: Bytes
+  admin: Bytes
+  clerk: Bytes
+  authTokenId: BigInt
+  authTokenType: Int
+  seller: Seller!
+  metadataUri: String!
+}
+
+type Seller implements Account @entity {
+  id: ID! # Offer.sellerId
+  sellerId: BigInt! # Allows sorting numerically by id
+  offers: [Offer!]! @derivedFrom(field: "seller")
+  exchanges: [Exchange!]! @derivedFrom(field: "seller")
+  assistant: Bytes!
+  admin: Bytes!
+  clerk: Bytes!
+  treasury: Bytes!
+  active: Boolean!
+  funds: [FundsEntity!]! @derivedFrom(field: "account")
+  voucherCloneAddress: Bytes!
+  authTokenId: BigInt!
+  authTokenType: Int!
+  logs: [EventLog!]! @derivedFrom(field: "account")
+  contractURI: String!
+  "Percentage as integer, to get decimals divide by 10000. E.g. 1 = 0.01%, 10000 = 100%"
+  royaltyPercentage: BigInt!
+  pendingSeller: PendingSeller @derivedFrom(field: "seller")
+  metadataUri: String!
+  metadata: SellerMetadata
+}
+
+type Buyer implements Account @entity {
+  id: ID!
+  exchanges: [Exchange!]! @derivedFrom(field: "buyer")
+  wallet: Bytes!
+  active: Boolean!
+  funds: [FundsEntity!]! @derivedFrom(field: "account")
+  logs: [EventLog!]! @derivedFrom(field: "account")
+}
+
+type PendingDisputeResolver @entity {
+  id: ID!
+  assistant: Bytes
+  admin: Bytes
+  clerk: Bytes
+  disputeResolver: DisputeResolver!
+}
+
+type DisputeResolver implements Account @entity {
+  id: ID!
+  escalationResponsePeriod: BigInt!
+  admin: Bytes!
+  clerk: Bytes!
+  treasury: Bytes!
+  assistant: Bytes!
+  metadataUri: String!
+  fees: [DisputeResolverFee!]!
+  sellerAllowList: [BigInt!]!
+  active: Boolean!
+  offers: [Offer!]! @derivedFrom(field: "disputeResolver")
+  funds: [FundsEntity!]! @derivedFrom(field: "account")
+  logs: [EventLog!]! @derivedFrom(field: "account")
+  pendingDisputeResolver: PendingDisputeResolver @derivedFrom(field: "disputeResolver")
+}
+
+type DisputeResolutionTermsEntity @entity {
+  "<DISPUTE_RESOLVER_ID>-terms"
+  id: ID!
+  disputeResolverId: BigInt!
+  escalationResponsePeriod: BigInt!
+  feeAmount: BigInt!
+  buyerEscalationDeposit: BigInt!
+  disputeResolver: DisputeResolver!
+  offer: Offer!
+}
+
+type DisputeResolverFee @entity {
+  "<DISPUTE_RESOLVER_ID>-<TOKEN_ADDRESS>-fee"
+  id: ID!
+  tokenAddress: Bytes!
+  tokenName: String!
+  token: ExchangeToken!
+  feeAmount: BigInt!
+}
+
+"""
+Disputes
+"""
+enum DisputeState {
+  RESOLVING
+  RETRACTED
+  RESOLVED
+  ESCALATED
+  DECIDED
+  REFUSED
+}
+
+type Dispute @entity {
+  id: ID!
+  exchangeId: BigInt!
+  exchange: Exchange!
+  state: DisputeState!
+  buyerPercent: BigInt!
+  disputedDate: BigInt!
+  escalatedDate: BigInt
+  finalizedDate: BigInt
+  retractedDate: BigInt
+  resolvedDate: BigInt
+  decidedDate: BigInt
+  refusedDate: BigInt
+  timeout: BigInt!
+  seller: Seller!
+  buyer: Buyer!
+  disputeResolver: DisputeResolver!
+}
+
+"""
+Funds
+"""
+type FundsEntity @entity {
+  id: ID! # sellerId + "-" + tokenAddress
+  availableAmount: BigInt!
+  tokenAddress: Bytes!
+  token: ExchangeToken!
+  accountId: BigInt!
+  account: Account!
+}
+
+"""
+Tokens
+"""
+type ExchangeToken @entity {
+  id: ID!
+  address: Bytes!
+  decimals: BigInt!
+  symbol: String!
+  name: String!
+  offers: [Offer!]! @derivedFrom(field: "exchangeToken")
+  funds: [FundsEntity!]! @derivedFrom(field: "token")
+}
+
+"""
+Events
+"""
+enum EventType {
+  "AccountHandler events"
+  SELLER_CREATED
+  SELLER_UPDATED
+  BUYER_CREATED
+  DISPUTE_RESOLVER_CREATED
+  DISPUTE_RESOLVER_UPDATED
+  DISPUTE_RESOLVER_ACTIVATED
+  DISPUTE_RESOLVER_FEES_ADDED
+  DISPUTE_RESOLVER_FEES_REMOVED
+  ALLOWED_SELLERS_ADDED
+  ALLOWED_SELLERS_REMOVED
+  "OfferHandler events"
+  OFFER_CREATED
+  OFFER_VOIDED
+  OFFER_EXTENDED
+  OFFER_RANGE_RESERVED
+  "ExchangeHandler events"
+  BUYER_COMMITTED
+  VOUCHER_EXTENDED
+  VOUCHER_REVOKED
+  VOUCHER_CANCELED
+  VOUCHER_REDEEMED
+  VOUCHER_TRANSFERRED
+  VOUCHER_EXPIRED
+  EXCHANGE_COMPLETED
+  "FundsHandler events"
+  FUNDS_DEPOSITED
+  FUNDS_RELEASED
+  FUNDS_ENCUMBERED
+  FUNDS_WITHDRAWN
+  "DisputeHandler events"
+  DISPUTE_RAISED
+  DISPUTE_RETRACTED
+  DISPUTE_TIMEOUT_EXTENDED
+  DISPUTE_EXPIRED
+  DISPUTE_RESOLVED
+  DISPUTE_ESCALATED
+  DISPUTE_DECIDED
+  ESCALATED_DISPUTE_REFUSED
+  ESCALATED_DISPUTE_EXPIRED
+}
+
+interface EventLog {
+  id: ID!
+  hash: String!
+  type: EventType!
+  timestamp: BigInt!
+  executedBy: Bytes!
+  account: Account!
+}
+
+type AccountEventLog implements EventLog @entity {
+  id: ID!
+  hash: String!
+  type: EventType!
+  timestamp: BigInt!
+  executedBy: Bytes!
+  account: Account!
+}
+
+type OfferEventLog implements EventLog @entity {
+  id: ID!
+  hash: String!
+  type: EventType!
+  timestamp: BigInt!
+  executedBy: Bytes!
+  account: Account!
+
+  offer: Offer!
+}
+
+type ExchangeEventLog implements EventLog @entity {
+  id: ID!
+  hash: String!
+  type: EventType!
+  timestamp: BigInt!
+  executedBy: Bytes!
+  account: Account!
+
+  exchange: Exchange!
+}
+
+type FundsEventLog implements EventLog @entity {
+  id: ID!
+  hash: String!
+  type: EventType!
+  timestamp: BigInt!
+  executedBy: Bytes!
+  account: Account!
+
+  funds: FundsEntity!
+}
+
+type DisputeEventLog implements EventLog @entity {
+  id: ID!
+  hash: String!
+  type: EventType!
+  timestamp: BigInt!
+  executedBy: Bytes!
+  account: Account!
+  
+  dispute: Dispute!
+}
+
+"""
+Groups
+"""
+type ConditionEntity @entity {
+  id: ID! # groupId
+  method: Int!
+  tokenType: Int!
+  tokenAddress: Bytes!
+  tokenId: BigInt!
+  threshold: BigInt!
+  maxCommits: BigInt!
+}
+
+"""
+Offer Ranges
+"""
+type RangeEntity @entity {
+  id: ID! # rangeId
+  start: BigInt!
+  end: BigInt!
+  owner: Bytes!
+  minted: BigInt!
+}

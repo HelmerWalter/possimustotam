@@ -1,0 +1,21 @@
+{
+  "version": "independent",
+  "useWorkspaces": true,
+  "npmClient": "npm",
+  "command": {
+    "publish": {
+      "ignoreChanges": ["*.md"],
+      "message": "chore(release): publish latest [skip ci]",
+      "conventionalCommits": true,
+      "verifyAccess": false
+    }
+  },
+  "ignoreChanges": [
+    "e2e/**",
+    "contracts/**",
+    ".github/**",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/*.md"
+  ]
+}

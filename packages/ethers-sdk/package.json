@@ -1,0 +1,48 @@
+{
+  "name": "@bosonprotocol/ethers-sdk",
+  "version": "1.12.4",
+  "description": "Implementation of the Web3LibAdapter interface and contract abstractions targeting ethers for the Boson Protocol.",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/cjs/index.d.ts",
+  "scripts": {
+    "dev": "tsc --build tsconfig.cjs.json --watch --preserveWatchOutput ",
+    "lint": "eslint --ignore-path ../../.gitignore --ext .js,.ts .",
+    "build": "rimraf dist && tsc && tsc --build tsconfig.cjs.json",
+    "test": "jest",
+    "clean": "rimraf dist coverage .turbo node_modules",
+    "typechain": "typechain --target ethers-v5 --out-dir ./src/contracts '../common/src/abis/*.json'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bosonprotocol/core-components.git"
+  },
+  "author": "Boson Protocol",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/bosonprotocol/core-components/issues"
+  },
+  "homepage": "https://github.com/bosonprotocol/core-components/tree/main/packages/contracts-sdk#readme",
+  "files": [
+    "dist/*",
+    "src/*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@bosonprotocol/common": "^1.22.2"
+  },
+  "devDependencies": {
+    "@typechain/ethers-v5": "^9.0.0",
+    "eslint": "^8.10.0",
+    "jest": "^27.5.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^27.1.3",
+    "typechain": "^7.0.0",
+    "typescript": "^4.5.5"
+  },
+  "peerDependencies": {
+    "ethers": "^5.5.0"
+  }
+}

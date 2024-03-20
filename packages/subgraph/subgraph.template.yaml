@@ -1,0 +1,284 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+features:
+  - ipfsOnEthereumContracts
+dataSources:
+  - kind: ethereum/contract
+    name: BosonOfferHandler
+    network: {{network}}
+    source:
+      address: "{{protocolDiamond}}"
+      abi: IBosonOfferHandler
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - BaseMetadataEntity
+        - ProductV1MetadataEntity
+        - Offer
+        - ExchangeToken
+        - ProductV1Brand
+      abis:
+        - name: IBosonOfferHandler
+          file: ../common/src/abis/IBosonOfferHandler.json
+        - name: ERC20
+          file: ../common/src/abis/ERC20.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+      eventHandlers:
+        - event: OfferCreated(indexed uint256,indexed uint256,(uint256,uint256,uint256,uint256,uint256,uint256,address,string,string,bool),(uint256,uint256,uint256,uint256),(uint256,uint256,uint256),(uint256,uint256,uint256,uint256),(uint256,uint256),indexed uint256,address)
+          handler: handleOfferCreatedEvent
+        - event: OfferVoided(indexed uint256,indexed uint256,indexed address)
+          handler: handleOfferVoidedEvent
+        - event: OfferExtended(indexed uint256,indexed uint256,uint256,indexed address)
+          handler: handleOfferExtendedEvent
+        - event: RangeReserved(indexed uint256,indexed uint256,uint256,uint256,address,indexed address)
+          handler: handleRangeReservedEvent
+      file: ./src/mappings/offer-handler.ts
+  - kind: ethereum/contract
+    name: BosonAccountHandler
+    network: {{network}}
+    source:
+      address: "{{protocolDiamond}}"
+      abi: IBosonAccountHandler
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Seller
+        - Buyer
+        - DisputeResolver
+        - PendingSeller
+      abis:
+        - name: IBosonAccountHandler
+          file: ../common/src/abis/IBosonAccountHandler.json
+        - name: IBosonVoucher
+          file: ../common/src/abis/IBosonVoucher.json
+        - name: ERC20
+          file: ../common/src/abis/ERC20.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+      eventHandlers:
+        - event: SellerCreated(indexed uint256,(uint256,address,address,address,address,bool,string),address,(uint256,uint8),indexed address)
+          handler: handleSellerCreatedEvent
+        - event: SellerUpdatePending(indexed uint256,(uint256,address,address,address,address,bool,string),(uint256,uint8),indexed address)
+          handler: handleSellerUpdatePendingEvent
+        - event: SellerUpdateApplied(indexed uint256,(uint256,address,address,address,address,bool,string),(uint256,address,address,address,address,bool,string),(uint256,uint8),(uint256,uint8),indexed address)
+          handler: handleSellerUpdateAppliedEvent
+        - event: BuyerCreated(indexed uint256,(uint256,address,bool),indexed address)
+          handler: handleBuyerCreatedEvent
+        - event: DisputeResolverCreated(indexed uint256,(uint256,uint256,address,address,address,address,string,bool),(address,string,uint256)[],uint256[],indexed address)
+          handler: handleDisputeResolverCreatedEvent
+        - event: DisputeResolverUpdatePending(indexed uint256,(uint256,uint256,address,address,address,address,string,bool),indexed address)
+          handler: handleDisputeResolverUpdatePendingEvent
+        - event: DisputeResolverUpdateApplied(indexed uint256,(uint256,uint256,address,address,address,address,string,bool),(uint256,uint256,address,address,address,address,string,bool),indexed address)
+          handler: handleDisputeResolverUpdateAppliedEvent
+        - event: DisputeResolverFeesAdded(indexed uint256,(address,string,uint256)[],indexed address)
+          handler: handleDisputeResolverFeesAddedEvent
+        - event: DisputeResolverFeesRemoved(indexed uint256,address[],indexed address)
+          handler: handleDisputeResolverFeesRemovedEvent
+        - event: AllowedSellersAdded(indexed uint256,uint256[],indexed address)
+          handler: handleAllowedSellersAddedEvent
+        - event: AllowedSellersRemoved(indexed uint256,uint256[],indexed address)
+          handler: handleAllowedSellersRemovedEvent
+      file: ./src/mappings/account-handler.ts
+  - kind: ethereum/contract
+    name: BosonAccountHandlerLegacy
+    network: {{network}}
+    source:
+      address: "{{protocolDiamond}}"
+      abi: IBosonAccountHandlerLegacy
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Seller
+        - DisputeResolver
+      abis:
+        - name: IBosonAccountHandler
+          file: ../common/src/abis/IBosonAccountHandler.json
+        - name: IBosonAccountHandlerLegacy
+          file: ../common/src/abis/IBosonAccountHandlerLegacy.json
+        - name: IBosonVoucher
+          file: ../common/src/abis/IBosonVoucher.json
+      eventHandlers:
+        - event: SellerUpdateApplied(indexed uint256,(uint256,address,address,address,address,bool),(uint256,address,address,address,address,bool),(uint256,uint8),(uint256,uint8),indexed address)
+          handler: handleSellerUpdateAppliedEventLegacy
+        - event: SellerUpdatePending(indexed uint256,(uint256,address,address,address,address,bool),(uint256,uint8),indexed address)
+          handler: handleSellerUpdatePendingEventLegacy
+        - event: SellerCreated(indexed uint256,(uint256,address,address,address,address,bool),address,(uint256,uint8),indexed address)
+          handler: handleSellerCreatedEventWithoutMetadataUri
+        - event: SellerUpdated(indexed uint256,(uint256,address,address,address,address,bool),(uint256,uint8),indexed address)
+          handler: handleSellerUpdatedEvent
+        - event: DisputeResolverUpdated(indexed uint256,(uint256,uint256,address,address,address,address,string,bool),indexed address)
+          handler: handleDisputeResolverUpdatedEvent
+        - event: DisputeResolverActivated(indexed uint256,(uint256,uint256,address,address,address,address,string,bool),indexed address)
+          handler: handleDisputeResolverActivatedEvent
+      file: ./src/mappings/account-handler.ts
+  - kind: ethereum/contract
+    name: BosonExchangeHandler
+    network: {{network}}
+    source:
+      address: "{{protocolDiamond}}"
+      abi: IBosonExchangeHandler
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Offer
+        - Exchange
+      abis:
+        - name: IBosonExchangeHandler
+          file: ../common/src/abis/IBosonExchangeHandler.json
+        - name: ERC20
+          file: ../common/src/abis/ERC20.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+      eventHandlers:
+        - event: BuyerCommitted(indexed uint256,indexed uint256,indexed uint256,(uint256,uint256,uint256,uint256,uint8),(uint256,uint256,uint256,bool),address)
+          handler: handleBuyerCommittedEvent
+        - event: VoucherExtended(indexed uint256,indexed uint256,uint256,indexed address)
+          handler: handleVoucherExtendedEvent
+        - event: VoucherRevoked(indexed uint256,indexed uint256,indexed address)
+          handler: handleVoucherRevokedEvent
+        - event: VoucherCanceled(indexed uint256,indexed uint256,indexed address)
+          handler: handleVoucherCanceledEvent
+        - event: VoucherExpired(indexed uint256,indexed uint256,indexed address)
+          handler: handleVoucherExpiredEvent
+        - event: VoucherRedeemed(indexed uint256,indexed uint256,indexed address)
+          handler: handleVoucherRedeemedEvent
+        - event: VoucherTransferred(indexed uint256,indexed uint256,indexed uint256,address)
+          handler: handleVoucherTransferredEvent
+        - event: ExchangeCompleted(indexed uint256,indexed uint256,indexed uint256,address)
+          handler: handleExchangeCompletedEvent
+      file: ./src/mappings/exchange-handler.ts
+  - kind: ethereum/contract
+    name: BosonFundsHandler
+    network: {{network}}
+    source:
+      address: "{{protocolDiamond}}"
+      abi: IBosonFundsHandler
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - FundsEntity
+        - FundsToken
+      abis:
+        - name: IBosonFundsHandler
+          file: ../common/src/abis/IBosonFundsHandler.json
+        - name: ERC20
+          file: ../common/src/abis/ERC20.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+      eventHandlers:
+        - event: FundsDeposited(indexed uint256,indexed address,indexed address,uint256)
+          handler: handleFundsDepositedEvent
+        - event: FundsReleased(indexed uint256,indexed uint256,indexed address,uint256,address)
+          handler: handleFundsReleasedEvent
+        - event: FundsEncumbered(indexed uint256,indexed address,uint256,indexed address)
+          handler: handleFundsEncumberedEvent
+        - event: FundsWithdrawn(indexed uint256,indexed address,indexed address,uint256,address)
+          handler: handleFundsWithdrawnEvent
+      file: ./src/mappings/funds-handler.ts
+  - kind: ethereum/contract
+    name: BosonDisputeHandler
+    network: {{network}}
+    source:
+      address: "{{protocolDiamond}}"
+      abi: IBosonDisputeHandler
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Dispute
+        - Exchange
+      abis:
+        - name: IBosonDisputeHandler
+          file: ../common/src/abis/IBosonDisputeHandler.json
+      eventHandlers:
+        - event: DisputeRaised(indexed uint256,indexed uint256,indexed uint256,address)
+          handler: handleDisputeRaisedEvent
+        - event: DisputeRetracted(indexed uint256,indexed address)
+          handler: handleDisputeRetractedEvent
+        - event: DisputeTimeoutExtended(indexed uint256,uint256,indexed address)
+          handler: handleDisputeTimeoutExtendedEvent
+        - event: DisputeExpired(indexed uint256,indexed address)
+          handler: handleDisputeExpiredEvent
+        - event: DisputeResolved(indexed uint256,uint256,indexed address)
+          handler: handleDisputeResolvedEvent
+        - event: DisputeEscalated(indexed uint256,indexed uint256,indexed address)
+          handler: handleDisputeEscalatedEvent
+        - event: DisputeDecided(indexed uint256,uint256,indexed address)
+          handler: handleDisputeDecidedEvent
+        - event: EscalatedDisputeRefused(indexed uint256,indexed address)
+          handler: handleEscalatedDisputeRefusedEvent
+        - event: EscalatedDisputeExpired(indexed uint256,indexed address)
+          handler: handleEscalatedDisputeExpiredEvent
+      file: ./src/mappings/dispute-handler.ts
+  - kind: ethereum/contract
+    name: BosonGroupHandler
+    network: {{network}}
+    source:
+      address: "{{protocolDiamond}}"
+      abi: IBosonGroupHandler
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Condition
+      abis:
+        - name: IBosonGroupHandler
+          file: ../common/src/abis/IBosonGroupHandler.json
+      eventHandlers:
+        - event: GroupCreated(indexed uint256,indexed uint256,(uint256,uint256,uint256[]),(uint8,uint8,address,uint256,uint256,uint256),indexed address)
+          handler: handleGroupCreatedEvent
+        - event: GroupUpdated(indexed uint256,indexed uint256,(uint256,uint256,uint256[]),(uint8,uint8,address,uint256,uint256,uint256),indexed address)
+          handler: handleGroupUpdatedEvent
+      file: ./src/mappings/group-handler.ts
+templates:
+  - name: BosonVoucher
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: IBosonVoucher
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Seller
+      abis:
+        - name: IBosonAccountHandler
+          file: ../common/src/abis/IBosonAccountHandler.json
+        - name: IBosonVoucher
+          file: ../common/src/abis/IBosonVoucher.json
+      eventHandlers:
+        - event: ContractURIChanged(string)
+          handler: handleContractURIChanged
+        - event: VouchersPreMinted(indexed uint256,uint256,uint256)
+          handler: handlePreMint
+      file: ./src/mappings/boson-voucher.ts

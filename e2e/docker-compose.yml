@@ -1,0 +1,68 @@
+version: "3"
+services:
+  meta-tx-gateway:
+    build:
+      context: ../.
+      dockerfile: ./e2e/meta-tx-gateway/Dockerfile
+    user: "node:node"
+    image: meta-tx-gateway:20230606133800
+    ports:
+      - "8888:8888"
+    environment:
+      - ENV_NAME=local
+      - PRIVATE_KEY=0x316b234f5fea007dcc40404188b588fb90cb9bb1e33fc163e212eab2f8565293 # ACCOUNT_9 from ./contracts/accounts.js
+      - RPC_NODE=http://host.docker.internal:8545
+    depends_on:
+      - hardhat-node
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    command: ["sh", "-c", "sleep 3 && npm run start"]
+
+  hardhat-node:
+    build: ../contracts
+    image: hardhat-node:c01643a3c9bb593125fc432dc900186f81853d7a_3
+    ports:
+      - "8545:8545"
+    volumes:
+      - ../contracts/scripts/deploy.js:/app/scripts/deploy.js
+
+  graph-node:
+    image: graphprotocol/graph-node:v0.27.0 # TODO: find out why ^0.28.0 not starting to index
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8020:8020"
+      - "8030:8030"
+      - "8040:8040"
+    depends_on:
+      - ipfs
+      - postgres
+      - hardhat-node
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      postgres_host: postgres
+      postgres_user: graph-node
+      postgres_pass: let-me-in
+      postgres_db: graph-node
+      ipfs: "ipfs:5001"
+      ethereum: "localhost:http://host.docker.internal:8545"
+      GRAPH_LOG: info
+      GRAPH_ALLOW_NON_DETERMINISTIC_IPFS: "true"
+
+  ipfs:
+    image: ipfs/go-ipfs:master-2022-05-25-e8f1ce0
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./ipfs-config.sh:/container-init.d/ipfs-config.sh
+
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
+    environment:
+      POSTGRES_USER: graph-node
+      POSTGRES_PASSWORD: let-me-in
+      POSTGRES_DB: graph-node

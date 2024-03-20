@@ -1,0 +1,36 @@
+query getFundsById($fundsId: ID!) {
+  fundsEntity(id: $fundsId) {
+    ...FundsEntityFields
+  }
+}
+
+query getFunds(
+  $fundsSkip: Int
+  $fundsFirst: Int
+  $fundsOrderBy: FundsEntity_orderBy
+  $fundsOrderDirection: OrderDirection
+  $fundsFilter: FundsEntity_filter
+) {
+  fundsEntities(
+    skip: $fundsSkip
+    first: $fundsFirst
+    orderBy: $fundsOrderBy
+    orderDirection: $fundsOrderDirection
+    where: $fundsFilter
+  ) {
+    ...FundsEntityFields
+  }
+}
+
+fragment FundsEntityFields on FundsEntity {
+  ...BaseFundsEntityFields
+  token {
+    ...BaseExchangeTokenFields
+  }
+}
+
+fragment BaseFundsEntityFields on FundsEntity {
+  id
+  availableAmount
+  accountId
+}

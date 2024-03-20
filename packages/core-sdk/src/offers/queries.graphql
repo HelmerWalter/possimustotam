@@ -1,0 +1,144 @@
+query getOfferByIdQuery(
+  $offerId: ID!
+  $exchangesSkip: Int
+  $exchangesFirst: Int
+  $exchangesOrderBy: Exchange_orderBy
+  $exchangesOrderDirection: OrderDirection
+  $exchangesFilter: Exchange_filter
+  $includeExchanges: Boolean = false
+) {
+  offer(id: $offerId) {
+    ...OfferFields
+  }
+}
+
+query getOffersQuery(
+  $offersSkip: Int
+  $offersFirst: Int
+  $offersOrderBy: Offer_orderBy
+  $offersOrderDirection: OrderDirection
+  $offersFilter: Offer_filter
+  $exchangesSkip: Int
+  $exchangesFirst: Int
+  $exchangesOrderBy: Exchange_orderBy
+  $exchangesOrderDirection: OrderDirection
+  $exchangesFilter: Exchange_filter
+  $includeExchanges: Boolean = false
+) {
+  offers(
+    skip: $offersSkip
+    first: $offersFirst
+    orderBy: $offersOrderBy
+    orderDirection: $offersOrderDirection
+    where: $offersFilter
+  ) {
+    ...OfferFields
+  }
+}
+
+fragment OfferFields on Offer {
+  ...BaseOfferFields
+  exchanges(
+    skip: $exchangesSkip
+    first: $exchangesFirst
+    orderBy: $exchangesOrderBy
+    orderDirection: $exchangesOrderDirection
+    where: $exchangesFilter
+  ) @include(if: $includeExchanges) {
+    ...BaseExchangeFields
+  }
+}
+
+fragment BaseOfferFields on Offer {
+  id
+  createdAt
+  price
+  sellerDeposit
+  protocolFee
+  agentFee
+  agentId
+  buyerCancelPenalty
+  quantityAvailable
+  quantityInitial
+  validFromDate
+  validUntilDate
+  voucherRedeemableFromDate
+  voucherRedeemableUntilDate
+  disputePeriodDuration
+  voucherValidDuration
+  resolutionPeriodDuration
+  metadataUri
+  metadataHash
+  voided
+  voidedAt
+  disputeResolverId
+  numberOfCommits
+  numberOfRedemptions
+  condition {
+    ...BaseConditionFields
+  }
+  seller {
+    ...BaseSellerFields
+  }
+  exchangeToken {
+    ...BaseExchangeTokenFields
+  }
+  disputeResolver {
+    ...BaseDisputeResolverFields
+  }
+  disputeResolutionTerms {
+    ...BaseDisputeResolutionTermsEntityFields
+  }
+  metadata {
+    name
+    description
+    externalUrl
+    animationUrl
+    animationMetadata {
+      ...BaseAnimationMetadataFields
+    }
+    licenseUrl
+    condition
+    schemaUrl
+    type
+    image
+    ... on ProductV1MetadataEntity {
+      attributes {
+        traitType
+        value
+        displayType
+      }
+      createdAt
+      voided
+      validFromDate
+      validUntilDate
+      quantityAvailable
+      uuid
+      product {
+        ...BaseProductV1ProductFields
+      }
+      variations {
+        ...BaseProductV1VariationFields
+      }
+      productV1Seller {
+        ...BaseProductV1SellerFields
+      }
+      exchangePolicy {
+        ...BaseProductV1ExchangePolicyFields
+      }
+      shipping {
+        ...BaseProductV1ShippingOptionFields
+      }
+    }
+  }
+  range {
+    ...BaseRangeFields
+  }
+}
+
+fragment BaseRangeFields on RangeEntity {
+  id
+  start
+  end
+  owner
+}
